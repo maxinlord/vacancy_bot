@@ -124,5 +124,4 @@ dmypy.json
 .pyre/
 
 config.py
-requirements.txt
 .vscode/settings.json
