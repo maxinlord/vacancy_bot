@@ -5,4 +5,6 @@ from .models import (
     Text,
     User,
     Value,
+    PostInfo,
+    PostMessage
 )

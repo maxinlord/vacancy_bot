@@ -2,10 +2,23 @@ from aiogram import Router
 
 
 def setup_message_routers() -> Router:
-    from . import cmd_start
+    from . import (
+        admin_panel,
+        balance,
+        change_city,
+        cmd_start,
+        load_post,
+        unknown_message,
+    )
 
     router = Router()
+    router.include_router(balance.router)
+    router.include_router(change_city.router)
     router.include_router(cmd_start.router)
+    router.include_router(admin_panel.router)
+    router.include_router(load_post.router)
+
+    router.include_router(unknown_message.router)
 
     # router.include_router(errors.router)
 

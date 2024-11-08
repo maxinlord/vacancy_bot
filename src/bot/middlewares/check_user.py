@@ -23,5 +23,13 @@ class CheckUser(BaseMiddleware):
         user = await session.scalar(
             select(User).where(User.id_user == event.from_user.id)
         )
+        if not user:
+            user = User(
+                id_user=event.from_user.id,
+                fullname=event.from_user.full_name,
+                username=event.from_user.username,
+            )
+            session.add(user)
+            await session.commit()
         data["user"] = user
         return await handler(event, data)

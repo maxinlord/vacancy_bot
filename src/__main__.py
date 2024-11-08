@@ -67,7 +67,7 @@ async def main() -> None:
     dp.inline_query.middleware(CheckUser())
 
     message_routers = setup_message_routers()
-    asyncio.create_task(scheduler())
+    # asyncio.create_task(scheduler())
     dp.include_router(message_routers)
     await set_default_commands(bot)
     await dp.start_polling(bot)

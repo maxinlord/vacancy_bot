@@ -1,4 +1,4 @@
-from sqlalchemy import BigInteger, String
+from sqlalchemy import BigInteger, DateTime, String
 from sqlalchemy.orm import Mapped, mapped_column
 
 from .base import Base
@@ -9,7 +9,48 @@ class User(Base):
 
     id_user: Mapped[int] = mapped_column(BigInteger, unique=True)
     username: Mapped[str] = mapped_column(String(length=64), nullable=True)
-    nickname: Mapped[str] = mapped_column(String(length=64), nullable=True)
+    fullname: Mapped[str] = mapped_column(String(length=64), nullable=True)
+    city: Mapped[str] = mapped_column(String(length=64), nullable=True)
+    sub: Mapped[bool] = mapped_column(default=True)  # Подписка
+    bot_blocked: Mapped[bool] = mapped_column(default=False)
+    sub_end_date: Mapped[str] = mapped_column(
+        DateTime, nullable=True
+    )  # Дата окончания подписки
+
+
+class Sub(Base):
+    __tablename__ = "subs"
+
+    id_sub: Mapped[str] = mapped_column(String(length=12))  # Идентификатор подписки
+    days: Mapped[int] = mapped_column()  # Количество дней подписки
+    price: Mapped[int] = mapped_column()  # Стоимость подписки
+
+
+class PostInfo(Base):
+    __tablename__ = "posts_info"
+
+    id_post: Mapped[str] = mapped_column(String(length=12))  # Идентификатор поста
+    city: Mapped[str] = mapped_column(String(length=64))  # Город
+    date_load: Mapped[str] = mapped_column(DateTime)  # Дата создания поста
+    date_start_sending: Mapped[str] = mapped_column(
+        DateTime
+    )  # Дата начала отправки поста
+    text: Mapped[str] = mapped_column(String(length=2048))
+    photo_id: Mapped[str] = mapped_column(String(length=1000))
+    is_sending_started: Mapped[bool] = mapped_column(
+        default=False
+    )  # Начата ли отправка поста
+    is_sending_finished: Mapped[bool] = mapped_column(
+        default=False
+    )  # Отправлен ли пост всем
+
+
+class PostMessage(Base):
+    __tablename__ = "posts_message"
+
+    id_post: Mapped[str] = mapped_column(String(length=12))  # Идентификатор поста
+    id_user: Mapped[int] = mapped_column(BigInteger)  # Идентификатор пользователя
+    id_message: Mapped[int] = mapped_column(BigInteger)  # Идентификатор сообщения
 
 
 class Text(Base):
