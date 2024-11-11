@@ -19,6 +19,7 @@ async def mailing(session: AsyncSession, bot: Bot, post: PostInfo):
             select(User).where(
                 and_(
                     User.bot_blocked == False,  # noqa
+                    User.sub_active == True,  # noqa
                 )
             )
         )
@@ -27,6 +28,7 @@ async def mailing(session: AsyncSession, bot: Bot, post: PostInfo):
             select(User).where(
                 and_(
                     User.bot_blocked == False,  # noqa
+                    User.sub_active == True,  # noqa
                     User.city == post.city,
                 )
             )

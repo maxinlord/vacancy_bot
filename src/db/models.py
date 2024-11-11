@@ -13,15 +13,17 @@ class User(Base):
     city: Mapped[str] = mapped_column(String(length=64), nullable=True)
     sub: Mapped[bool] = mapped_column(default=True)  # Подписка
     bot_blocked: Mapped[bool] = mapped_column(default=False)
-    sub_end_date: Mapped[str] = mapped_column(
-        DateTime, nullable=True
-    )  # Дата окончания подписки
+    sub_active: Mapped[bool] = mapped_column(default=False)  # Активна ли подписка
 
 
 class Sub(Base):
     __tablename__ = "subs"
 
+    id_user: Mapped[int] = mapped_column(BigInteger)  # Идентификатор пользователя
     id_sub: Mapped[str] = mapped_column(String(length=12))  # Идентификатор подписки
+    type_sub: Mapped[str] = mapped_column(String(length=12))  # Тип подписки
+    sub_start_date: Mapped[str] = mapped_column(DateTime)  # Дата начала подписки
+    sub_end_date: Mapped[str] = mapped_column(DateTime)  # Дата окончания подписки
     days: Mapped[int] = mapped_column()  # Количество дней подписки
     price: Mapped[int] = mapped_column()  # Стоимость подписки
 

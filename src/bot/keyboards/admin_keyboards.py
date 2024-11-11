@@ -51,3 +51,14 @@ async def rk_delete_post(
     else:
         builder.adjust(1, q_bttn, 1)
     return builder.as_markup(resize_keyboard=True)
+
+
+async def rk_time_stat_posts():
+    builder = ReplyKeyboardBuilder()
+    builder.button(text=await tools.get_text_button("one_day"))
+    builder.button(text=await tools.get_text_button("one_week"))
+    builder.button(text=await tools.get_text_button("one_month"))
+    builder.button(text=await tools.get_text_button("one_year"))
+    builder.button(text=await tools.get_text_button("back"))
+    builder.adjust(2, 2, 1)
+    return builder.as_markup(resize_keyboard=True)

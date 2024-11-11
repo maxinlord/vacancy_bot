@@ -126,3 +126,5 @@ dmypy.json
 config.py
 .vscode/settings.json
 testing.py
+alembic.ini
+alembic/

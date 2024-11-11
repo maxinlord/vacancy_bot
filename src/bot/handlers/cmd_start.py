@@ -9,7 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from bot.filters import GetTextButton
 from bot.keyboards import rk_accept_terms, rk_cities, rk_main_menu, rk_registration
 from bot.states import UserState
-from db import User
+from db import User, Sub
 from tools import get_cities, get_text_message, get_value, is_admin
 
 flags = {"throttling_key": "default"}
@@ -63,18 +63,30 @@ async def get_city(
     if message.text not in await get_cities():
         return
     FREE_SUB_DAYS = await get_value(session=session, value_name="FREE_SUB_DAYS")
+    PRICE_SUB = await get_value(session=session, value_name="PRICE_SUB")
     sub_end_date = datetime.now() + timedelta(days=FREE_SUB_DAYS)
     await message.answer(
         text=await get_text_message(
             "sub_info_and_bot_policy",
-            price_sub=100,
+            price_sub=PRICE_SUB,
             free_sub_days=FREE_SUB_DAYS,
             sub_end_date=sub_end_date.strftime("%d.%m.%Y"),
         ),
         reply_markup=await rk_accept_terms(),
     )
     user.city = message.text
-    user.sub_end_date = sub_end_date
+    session.add(
+        Sub(
+            id_user=user.id_user,
+            id_sub=0,
+            type_sub="free",
+            sub_start_date=datetime.now(),
+            sub_end_date=sub_end_date,
+            days=FREE_SUB_DAYS,
+            price=PRICE_SUB,
+        )
+    )
+    user.sub_active = True
     await session.commit()
     await state.set_state(UserState.accept_terms)
 

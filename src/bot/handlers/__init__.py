@@ -9,6 +9,9 @@ def setup_message_routers() -> Router:
         cmd_start,
         delete_post,
         load_post,
+        stat_posts,
+        stat_subs,
+        stat_users,
         unknown_message,
     )
 
@@ -19,6 +22,9 @@ def setup_message_routers() -> Router:
     router.include_router(admin_panel.router)
     router.include_router(load_post.router)
     router.include_router(delete_post.router)
+    router.include_router(stat_users.router)
+    router.include_router(stat_subs.router)
+    router.include_router(stat_posts.router)
 
     router.include_router(unknown_message.router)
 

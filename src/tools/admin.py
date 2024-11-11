@@ -1,6 +1,6 @@
 import random
 import string
-from datetime import timedelta
+from datetime import datetime, timedelta
 
 from aiogram.types import Message
 
@@ -9,6 +9,18 @@ from config import ID_ADMIN
 
 def is_admin(id_user: int):
     return id_user == ID_ADMIN
+
+
+def get_days_in_month(now: datetime):
+    month = now.month
+    year = now.year
+    if month == 12:
+        next_month = 1
+        next_year = year + 1
+    else:
+        next_month = month + 1
+        next_year = year
+    return (datetime(next_year, next_month, 1) - timedelta(days=1)).day
 
 
 def parser_str_to_timedelta(time_str: str) -> timedelta | None:

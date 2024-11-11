@@ -15,3 +15,4 @@ class AdminState(StatesGroup):
     delay_between_posts = State()
     wait_posts = State()
     delete_post = State()
+    post_statistics = State()

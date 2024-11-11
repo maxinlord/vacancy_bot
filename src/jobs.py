@@ -1,9 +1,11 @@
 from datetime import datetime
-from init_db import _sessionmaker_for_func
-from db import PostInfo
-from sqlalchemy import select, and_
-from init_bot import bot
+
+from sqlalchemy import and_, select
+
 import tools
+from db import PostInfo, Sub, User
+from init_bot import bot
+from init_db import _sessionmaker_for_func
 
 
 async def job_sec() -> None:
@@ -28,3 +30,14 @@ async def job_sec() -> None:
 
 async def job_minute() -> None:
     pass
+
+
+async def check_end_sub_day():
+    async with _sessionmaker_for_func() as session:
+        subs = await session.scalars(
+            select(Sub).where(Sub.sub_end_date <= datetime.now())
+        )
+        for sub in subs:
+            user = await session.scalar(select(User).where(User.id_user == sub.id_user))
+            user.sub_active = False
+        await session.commit()
