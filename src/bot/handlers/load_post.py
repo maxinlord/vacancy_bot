@@ -1,7 +1,5 @@
-import asyncio
-from datetime import datetime
 import json
-import time
+from datetime import datetime
 
 from aiogram import Router
 from aiogram.fsm.context import FSMContext
@@ -9,11 +7,11 @@ from aiogram.types import Message, ReplyKeyboardRemove
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from bot.filters import GetTextButton
-from bot.keyboards import rk_admin_cities, rk_done, rk_admin_panel
+from bot.keyboards import rk_admin_cities, rk_admin_panel, rk_done
+from bot.middlewares import AlbumMiddleware
 from bot.states import AdminState
 from db import PostInfo, User
 from tools import (
-    collapse_collision_media,
     gen_key,
     get_cities,
     get_photo_id,
@@ -24,6 +22,8 @@ from tools import (
 
 flags = {"throttling_key": "default"}
 router = Router()
+
+router.message.middleware(AlbumMiddleware(latency=1))
 
 
 @router.message(AdminState.admin_panel, GetTextButton("load_post"), flags=flags)
@@ -39,6 +39,24 @@ async def load_post_(
     )
     await state.clear()
     await state.set_state(AdminState.pick_city_for_post)
+
+
+@router.message(
+    AdminState.pick_city_for_post,
+    GetTextButton("back"),
+    flags=flags,
+)
+async def back_to_panel(
+    message: Message,
+    session: AsyncSession,
+    state: FSMContext,
+    user: User,
+):
+    await state.set_state(AdminState.admin_panel)
+    await message.answer(
+        text=await get_text_message("admin_panel"),
+        reply_markup=await rk_admin_panel(),
+    )
 
 
 @router.message(AdminState.pick_city_for_post, flags=flags)
@@ -87,7 +105,6 @@ async def done(
 ):
     data = await state.get_data()
     posts = data["posts"]
-    posts = collapse_collision_media(posts)
     now = datetime.now()
     delay = parser_str_to_timedelta(data["delay"])
     for post in posts:
@@ -116,14 +133,17 @@ async def get_posts(
     session: AsyncSession,
     state: FSMContext,
     user: User,
+    album: list[Message] | None = None,
 ):
     data = await state.get_data()
     posts = data.get("posts", [])
 
-    if photo_id := get_photo_id(message):
-        text = posts[-1]["text"] if posts else ""
-        text = message.caption or text
+    if album:
+        text = album[0].caption
+        photo_id = [get_photo_id(msg) for msg in album]
         posts.append({"photo_id": photo_id, "text": text})
+    elif photo_id := get_photo_id(message):
+        posts.append({"photo_id": [photo_id], "text": message.caption})
     else:
         posts.append({"text": message.text})
     amount_posts = len(posts)

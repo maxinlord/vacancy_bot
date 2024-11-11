@@ -7,6 +7,7 @@ def setup_message_routers() -> Router:
         balance,
         change_city,
         cmd_start,
+        delete_post,
         load_post,
         unknown_message,
     )
@@ -17,6 +18,7 @@ def setup_message_routers() -> Router:
     router.include_router(cmd_start.router)
     router.include_router(admin_panel.router)
     router.include_router(load_post.router)
+    router.include_router(delete_post.router)
 
     router.include_router(unknown_message.router)
 

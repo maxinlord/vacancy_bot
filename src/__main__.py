@@ -19,6 +19,7 @@ from db import Base
 from init_bot import bot
 from init_db import _engine, _sessionmaker
 from init_db_redis import redis
+from jobs import job_sec
 
 
 async def on_startup(_engine: AsyncEngine) -> None:
@@ -31,7 +32,7 @@ async def on_shutdown(session: AsyncSession) -> None:
 
 
 async def scheduler() -> None:
-    # aioschedule.every(1).seconds.do(job_sec)
+    aioschedule.every(1).seconds.do(job_sec)
     # aioschedule.every().day.at("10:30").do(any_job)
     while True:
         await aioschedule.run_pending()
@@ -67,7 +68,7 @@ async def main() -> None:
     dp.inline_query.middleware(CheckUser())
 
     message_routers = setup_message_routers()
-    # asyncio.create_task(scheduler())
+    asyncio.create_task(scheduler())
     dp.include_router(message_routers)
     await set_default_commands(bot)
     await dp.start_polling(bot)

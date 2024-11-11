@@ -14,5 +14,4 @@ class AdminState(StatesGroup):
     pick_city_for_post = State()
     delay_between_posts = State()
     wait_posts = State()
-    
-    
+    delete_post = State()

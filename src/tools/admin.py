@@ -19,78 +19,19 @@ def parser_str_to_timedelta(time_str: str) -> timedelta | None:
     if not _.isdigit():
         return None
     num = int(_)
-    if letter_time == "d":
+    if letter_time in ["d", "д"]:
         return timedelta(days=num)
-    elif letter_time == "h":
+    elif letter_time in ["h", "ч"]:
         return timedelta(hours=num)
-    elif letter_time == "m":
+    elif letter_time in ["m", "м"]:
         return timedelta(minutes=num)
-    elif letter_time == "s":
+    elif letter_time in ["s", "с"]:
         return timedelta(seconds=num)
     return None
 
 
 def get_photo_id(message: Message) -> str | None:
     return message.photo[-1].file_id if message.photo else None
-
-
-def collapse_collision_media_OLD(posts: list):
-    new_posts = []
-    media_group = []
-    c_posts = posts.copy()
-    for post in posts:
-        if not post:
-            continue
-        if not post.get("photo_id"):
-            new_posts.append(post)
-            c_posts.remove(post)
-            continue
-        text = post["text"]
-        counter = 0
-        while counter < len(c_posts):
-            c_post = c_posts[counter]
-            if text == c_post["text"] and c_post.get("photo_id"):
-                media_group.append(c_post["photo_id"])
-                c_posts.remove(c_post)
-                ind_for_edit = posts.index(c_post)
-                posts[ind_for_edit] = {}
-            else:
-                counter += 1
-
-        new_posts.append({"text": text, "photo_id": media_group})
-        media_group = []
-        if not c_posts:
-            break
-    return new_posts
-
-
-def collapse_collision_media(posts: list):
-    new_posts = []
-    media_group = []
-    c_posts = posts.copy()
-    for post in posts:
-        if not post:
-            continue
-        if not post.get("photo_id"):
-            new_posts.append(post)
-            c_posts.remove(post)
-            continue
-        text = post["text"]
-        for ind_c_post, c_post in enumerate(c_posts):
-            if not c_post:
-                continue
-            if text == c_post["text"] and c_post.get("photo_id"):
-                media_group.append(c_post["photo_id"])
-                c_posts[ind_c_post] = {}
-                ind_for_edit = posts.index(c_post)
-                posts[ind_for_edit] = {}
-
-        new_posts.append({"text": text, "photo_id": media_group})
-        media_group = []
-        if not c_posts:
-            break
-    return new_posts
-
 
 
 def gen_key(length: int):

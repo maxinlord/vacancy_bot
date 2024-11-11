@@ -31,5 +31,8 @@ class CheckUser(BaseMiddleware):
             )
             session.add(user)
             await session.commit()
+        if user.bot_blocked:
+            user.bot_blocked = False
+            await session.commit()
         data["user"] = user
         return await handler(event, data)

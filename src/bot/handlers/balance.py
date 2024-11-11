@@ -22,6 +22,8 @@ async def balance_info(
 ):
     await message.answer(
         text=await get_text_message(
-            "balance_info", end_date=user.sub_end_date.strftime("%d.%m.%Y")
+            "balance_info",
+            end_date=user.sub_end_date.strftime("%d.%m.%Y"),
+            city=user.city,
         )
     )
