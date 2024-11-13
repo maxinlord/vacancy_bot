@@ -9,7 +9,7 @@ from sqlalchemy import and_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 import tools
-from config import ID_ADMIN[0]
+from config import ID_ADMIN
 from db import PostInfo, PostMessage, User
 
 
