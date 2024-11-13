@@ -11,7 +11,6 @@ class User(Base):
     username: Mapped[str] = mapped_column(String(length=64), nullable=True)
     fullname: Mapped[str] = mapped_column(String(length=64), nullable=True)
     city: Mapped[str] = mapped_column(String(length=64), nullable=True)
-    sub: Mapped[bool] = mapped_column(default=True)  # Подписка
     bot_blocked: Mapped[bool] = mapped_column(default=False)
     sub_active: Mapped[bool] = mapped_column(default=False)  # Активна ли подписка
 

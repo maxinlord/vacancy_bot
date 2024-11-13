@@ -63,7 +63,7 @@ async def get_city(
     if message.text not in await get_cities():
         return
     FREE_SUB_DAYS = await get_value(session=session, value_name="FREE_SUB_DAYS")
-    PRICE_SUB = await get_value(session=session, value_name="PRICE_SUB")
+    PRICE_SUB = await get_value(session=session, value_name="PRICE_SUB", cache_=False)
     sub_end_date = datetime.now() + timedelta(days=FREE_SUB_DAYS)
     await message.answer(
         text=await get_text_message(
