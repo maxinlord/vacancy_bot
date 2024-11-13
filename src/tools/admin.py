@@ -8,7 +8,7 @@ from config import ID_ADMIN
 
 
 def is_admin(id_user: int):
-    return str(id_user) in ID_ADMIN
+    return f"{id_user}" in ID_ADMIN
 
 
 def get_days_in_month(now: datetime):
