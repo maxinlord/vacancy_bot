@@ -9,7 +9,7 @@ from sqlalchemy import and_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 import tools
-from config import ID_ADMIN
+from config import ID_ADMIN[0]
 from db import PostInfo, PostMessage, User
 
 
@@ -116,7 +116,7 @@ async def editing(session: AsyncSession, bot: Bot, post: PostInfo):
                 await session.delete(post_message)
                 continue
             await bot.send_message(
-                chat_id=ID_ADMIN,
+                chat_id=ID_ADMIN[0],
                 text=await tools.get_text_message("error_delete_message", e=t.message),
             )
             try:
@@ -135,14 +135,14 @@ async def editing(session: AsyncSession, bot: Bot, post: PostInfo):
                     )
             except TelegramBadRequest as t:
                 await bot.send_message(
-                    chat_id=ID_ADMIN,
+                    chat_id=ID_ADMIN[0],
                     text=await tools.get_text_message(
                         "error_edit_message", e=t.message
                     ),
                 )
         except Exception as e:
             await bot.send_message(
-                chat_id=ID_ADMIN,
+                chat_id=ID_ADMIN[0],
                 text=await tools.get_text_message("unknown_error", e=e),
             )
         await session.delete(post_message)
