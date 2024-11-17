@@ -139,13 +139,22 @@ async def get_posts(
     posts = data.get("posts", [])
 
     if album:
-        text = album[0].caption
+        text = album[0].html_text
+        if not text:
+            return await message.answer(
+                text=await get_text_message("media_without_caption")
+            )
         photo_id = [get_photo_id(msg) for msg in album]
         posts.append({"photo_id": photo_id, "text": text})
     elif photo_id := get_photo_id(message):
-        posts.append({"photo_id": [photo_id], "text": message.caption})
+        text = message.html_text
+        if not text:
+            return await message.answer(
+                text=await get_text_message("media_without_caption")
+            )
+        posts.append({"photo_id": [photo_id], "text": text})
     else:
-        posts.append({"text": message.text})
+        posts.append({"text": message.html_text})
     amount_posts = len(posts)
     await message.answer(
         text=await get_text_message("posts_loaded", amount_posts=amount_posts),
